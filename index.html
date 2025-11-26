@@ -78,6 +78,7 @@
 
     .scene.active { display: block; }
 
+    /* 共用地板邊框 */
     .scene-inner {
       position: absolute;
       inset: 7%;
@@ -88,6 +89,7 @@
         inset 0 14px 0 rgba(255,255,255,0.4);
     }
 
+    /* 大門（共用樣式） */
     .door {
       position: absolute;
       width: 18%;
@@ -109,6 +111,7 @@
       background: #8b5a2b;
     }
 
+    /* marker（驚嘆號） */
     .marker {
       position: absolute;
       width: 32px;
@@ -128,7 +131,7 @@
       font-size: 1.1rem;
     }
 
-    .marker:hover:not(:disabled) {
+    .marker:hover {
       transform: translate(-50%, -50%) scale(1.05);
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
@@ -137,6 +140,8 @@
       background: #4cd964;
       opacity: 0.85;
     }
+
+    /* ===== 每個場景的佈置 ===== */
 
     /* 0. 大廳 Lobby */
     .scene-lobby .desk {
@@ -299,9 +304,9 @@
       background:#e47356;
       box-shadow:0 3px 0 rgba(0,0,0,0.2);
     }
-    .scene-classC .ball:nth-child(2){left:52%;top:36%;}
-    .scene-classC .ball:nth-child(3){left:67%;top:55%;background:#6bb5e3;}
-    .scene-classC .ball:nth-child(4){left:77%;top:36%;background:#8bcf7f;}
+    .scene-classC .ball:nth-child(1){left:52%;top:36%;}
+    .scene-classC .ball:nth-child(2){left:67%;top:55%;background:#6bb5e3;}
+    .scene-classC .ball:nth-child(3){left:77%;top:36%;background:#8bcf7f;}
 
     /* 4. 辦公室：最終密碼箱 */
     .scene-office .desk {
@@ -367,6 +372,8 @@
       display: none;
     }
     .success-banner.show { display: block; }
+
+    /* ===== Modal（題目視窗） ===== */
 
     .modal-backdrop {
       position: fixed;
@@ -496,7 +503,7 @@
         </div>
       </div>
 
-      <!-- 1. 教室 A -->
+      <!-- 1. 教室 A：書本密碼 -->
       <div class="scene scene-classA" data-scene="1">
         <div class="scene-inner">
           <div class="board"></div>
@@ -512,7 +519,7 @@
         </div>
       </div>
 
-      <!-- 2. 教室 B -->
+      <!-- 2. 教室 B：亮暗燈號 -->
       <div class="scene scene-classB" data-scene="2">
         <div class="scene-inner">
           <div class="board"></div>
@@ -526,7 +533,7 @@
         </div>
       </div>
 
-      <!-- 3. 教室 C -->
+      <!-- 3. 教室 C：體育儲物櫃 -->
       <div class="scene scene-classC" data-scene="3">
         <div class="scene-inner">
           <div class="cabinet"></div>
@@ -538,7 +545,7 @@
         </div>
       </div>
 
-      <!-- 4. 辦公室 -->
+      <!-- 4. 辦公室：最終密碼箱 -->
       <div class="scene scene-office" data-scene="4">
         <div class="scene-inner">
           <div class="desk"></div>
@@ -578,6 +585,8 @@
   </div>
 
   <script>
+    // ===== 遊戲資料 =====
+
     const scenesData = [
       {
         id: 0,
@@ -585,7 +594,7 @@
         type: "info",
         title: "大廳：失竊事件的開始",
         question:
-          "今天早上，負責保管校史原稿的老師發現原稿不見了，只留下了一個信封。信封裡寫著：\\n\\n「想找回校史原稿，就從『知識的房間』開始吧。」\\n\\n你們即將在 45 分鐘內解開所有謎題，準備好就可以前往第一間教室。",
+          "今天早上，負責保管校史原稿的老師發現原稿不見了，只留下了一個信封。信封裡寫著：\n\n「想找回校史原稿，就從『知識的房間』開始吧。」\n\n你們即將在 45 分鐘內解開所有謎題，準備好就可以前往第一間教室。",
         hint: "提示：『知識的房間』指的是哪一種教室呢？",
         answer: "",
         explanation:
@@ -597,7 +606,7 @@
         type: "code",
         title: "教室 A：書本密碼關",
         question:
-          "桌上擺著四本貼有標籤的書，封底分別寫著數字：\\n\\n甲書：1995 年出版，封底數字 3\\n乙書：2001 年出版，封底數字 1\\n丙書：2010 年出版，封底數字 4\\n丁書：2018 年出版，封底數字 7\\n\\n請依『出版年份由早到晚』的順序，把封底數字排在一起，輸入得到的四位數密碼。",
+          "桌上擺著四本貼有標籤的書，封底分別寫著數字：\n\n甲書：1995 年出版，封底數字 3\n乙書：2001 年出版，封底數字 1\n丙書：2010 年出版，封底數字 4\n丁書：2018 年出版，封底數字 7\n\n請依『出版年份由早到晚』的順序，把封底數字排在一起，輸入得到的四位數密碼。",
         hint: "依年份排序：1995 → 2001 → 2010 → 2018。",
         answer: "3147",
         explanation:
@@ -609,7 +618,7 @@
         type: "code",
         title: "教室 B：亮暗燈號關",
         question:
-          "牆上有三個長條燈，亮與暗的排列如下：\\n\\n亮　｜　暗　｜　亮\\n\\n桌上的提示卡寫著：「亮 = 1，暗 = 0，請把燈號看成一個三位數的二進位數。」\\n\\n請把這個二進位數換算成十進位數，輸入答案。",
+          "牆上有三個長條燈，亮與暗的排列如下：\n\n亮　｜　暗　｜　亮\n\n桌上的提示卡寫著：「亮 = 1，暗 = 0，請把燈號看成一個三位數的二進位數。」\n\n請把這個二進位數換算成十進位數，輸入答案。",
         hint: "從左到右是 1 0 1（二進位 101），把它換成十進位。",
         answer: "5",
         explanation:
@@ -621,7 +630,7 @@
         type: "code",
         title: "教室 C：體育儲物櫃關",
         question:
-          "體育器材室的地板上畫著三個圓形標誌，旁邊畫著箭頭，指向的順序是：\\n\\n2 → 5 → 9\\n\\n老師在紙條上寫著：「請依箭頭指向的順序，把數字連起來，就是下一段密碼。」\\n\\n請輸入你得到的三位數密碼。",
+          "體育器材室的地板上畫著三個圓形標誌，旁邊畫著箭頭，指向的順序是：\n\n2 → 5 → 9\n\n老師在紙條上寫著：「請依箭頭指向的順序，把數字連起來，就是下一段密碼。」\n\n請輸入你得到的三位數密碼。",
         hint: "按順序把三個數字接在一起。",
         answer: "259",
         explanation:
@@ -633,7 +642,7 @@
         type: "code",
         title: "辦公室：最終密碼箱",
         question:
-          "你們帶著三段密碼來到辦公室，桌上放著一個大密碼箱，旁邊貼著一張指示：\\n\\n「請依照取得的順序，將三段密碼直接接在一起，組成完整的最終密碼。」\\n\\n已知你們拿到的三段密碼是：\\n第一段：3147\\n第二段：5\\n第三段：259\\n\\n請把三段密碼依順序接在一起，輸入八位數的最終密碼。",
+          "你們帶著三段密碼來到辦公室，桌上放著一個大密碼箱，旁邊貼著一張指示：\n\n「請依照取得的順序，將三段密碼直接接在一起，組成完整的最終密碼。」\n\n已知你們拿到的三段密碼是：\n第一段：3147\n第二段：5\n第三段：259\n\n請把三段密碼依順序接在一起，輸入八位數的最終密碼。",
         hint: "把 3147、5、259 接成一個數字，中間不要加任何符號。",
         answer: "31475259",
         explanation:
@@ -641,12 +650,13 @@
       }
     ];
 
-    const TOTAL_TIME_SEC = 45 * 60;
+    const TOTAL_TIME_SEC = 45 * 60; // 45 分鐘
     let remainingSec = TOTAL_TIME_SEC;
     let timerId = null;
     let currentScene = 0;
     const obtainedCodes = [];
 
+    // ===== DOM =====
     const sceneEls = document.querySelectorAll(".scene");
     const markerEls = document.querySelectorAll(".marker");
     const locationLabel = document.getElementById("locationLabel");
@@ -665,6 +675,7 @@
     const submitBtn = document.getElementById("submitBtn");
     const nextSceneBtn = document.getElementById("nextSceneBtn");
 
+    // ===== 工具函式 =====
     function formatTime(sec) {
       const m = Math.floor(sec / 60);
       const s = sec % 60;
@@ -696,14 +707,15 @@
       feedbackBox.classList.remove("correct-text");
       feedbackBox.classList.add("wrong-text");
       modalTitle.textContent = "時間到";
-      questionTextEl.textContent =
-        "45 分鐘已經用完，建議先暫停遊戲與同伴討論哪一關最卡，再重新挑戰！";
+      questionTextEl.textContent = "45 分鐘已經用完，建議先暫停遊戲與同伴討論哪一關最卡，再重新挑戰！";
       hintTextEl.textContent = "";
       answerInput.style.display = "none";
       submitBtn.style.display = "none";
       nextSceneBtn.style.display = "none";
       modalBackdrop.classList.add("active");
       modalBackdrop.setAttribute("aria-hidden", "false");
+
+      // 禁用所有 marker
       markerEls.forEach(m => m.disabled = true);
     }
 
@@ -742,19 +754,21 @@
       feedbackBox.textContent = "請仔細閱讀題目，再輸入你的答案。";
       feedbackBox.classList.remove("correct-text", "wrong-text");
 
-      answerInput.value = "";
-      answerInput.style.display = (data.type === "info") ? "none" : "block";
-      submitBtn.style.display = (data.type === "info") ? "none" : "inline-block";
-      nextSceneBtn.style.display = "none";
-
       if (data.type === "info") {
-        // 大廳：只有說明，直接顯示提示
-        feedbackBox.textContent = data.explanation;
-        feedbackBox.classList.add("correct-text");
+        answerInput.style.display = "none";
+        submitBtn.textContent = "我準備好了";
+      } else {
+        answerInput.style.display = "block";
+        answerInput.value = "";
+        submitBtn.textContent = "提交答案";
       }
+
+      nextSceneBtn.style.display = "none";
+      submitBtn.disabled = false;
 
       modalBackdrop.classList.add("active");
       modalBackdrop.setAttribute("aria-hidden", "false");
+      if (data.type !== "info") answerInput.focus();
     }
 
     function closeModal() {
@@ -762,85 +776,101 @@
       modalBackdrop.setAttribute("aria-hidden", "true");
     }
 
-    function handleSubmit() {
-      const data = scenesData[currentScene];
-      if (!data || data.type === "info") return;
+    function markSceneSolved(sceneIndex) {
+      // 把該 scene 的 marker 標為 done
+      markerEls.forEach(m => {
+        if (Number(m.dataset.scene) === sceneIndex) {
+          m.classList.add("done");
+        }
+      });
+    }
 
-      const userAns = answerInput.value.trim();
+    function goToNextScene(fromIndex) {
+      const nextIndex = fromIndex + 1;
+      if (nextIndex >= scenesData.length) {
+        // 全部完成
+        successBanner.classList.add("show");
+        return;
+      }
+      showScene(nextIndex);
+    }
+
+    // ===== 事件綁定 =====
+    markerEls.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const sceneIndex = Number(btn.dataset.scene);
+        openPuzzle(sceneIndex);
+      });
+    });
+
+    submitBtn.addEventListener("click", () => {
+      const data = scenesData[currentScene];
+      if (!data) return;
+
+      if (data.type === "info") {
+        // 直接視為通過
+        feedbackBox.textContent = data.explanation;
+        feedbackBox.classList.add("correct-text");
+        markSceneSolved(currentScene);
+        submitBtn.disabled = true;
+        nextSceneBtn.style.display = "inline-block";
+        nextSceneBtn.textContent = "前往教室 A ▶";
+        return;
+      }
+
+      const userAns = (answerInput.value || "").trim();
       if (!userAns) {
-        feedbackBox.textContent = "請先輸入答案喔！";
+        feedbackBox.textContent = "請先輸入你的答案喔！";
         feedbackBox.classList.remove("correct-text");
         feedbackBox.classList.add("wrong-text");
         return;
       }
 
-      if (userAns === data.answer) {
-        feedbackBox.textContent = "答對了！\\n\\n" + data.explanation;
+      const correct = userAns === String(data.answer).trim();
+      if (correct) {
+        feedbackBox.innerHTML = "<strong>答對了！👍</strong> " + data.explanation;
         feedbackBox.classList.remove("wrong-text");
         feedbackBox.classList.add("correct-text");
-
-        // 記錄密碼（最後一關就不用顯示在上面）
-        if (data.id >= 1 && data.id <= 3) {
-          if (!obtainedCodes.includes(data.answer)) {
-            obtainedCodes.push(data.answer);
-            updateCodesText();
-          }
-        }
-
-        // 標記這個 marker 完成
-        const marker = document.querySelector(`.marker[data-scene="${data.id}"]`);
-        if (marker) {
-          marker.classList.add("done");
-          marker.disabled = true;
-        }
-
-        submitBtn.style.display = "none";
-
-        if (data.id < 4) {
-          nextSceneBtn.style.display = "inline-block";
+        submitBtn.disabled = true;
+        nextSceneBtn.style.display = "inline-block";
+        if (currentScene < scenesData.length - 1) {
+          nextSceneBtn.textContent = "前往下一個場景 ▶";
         } else {
-          // 最終關
+          nextSceneBtn.textContent = "完成遊戲 🎉";
+        }
+        markSceneSolved(currentScene);
+
+        // 記錄密碼（除了 info 場景）
+        if (data.answer && !obtainedCodes.includes(String(data.answer))) {
+          obtainedCodes.push(String(data.answer));
+          updateCodesText();
+        }
+
+        // 如果是最後一關也顯示成功訊息
+        if (currentScene === scenesData.length - 1) {
           successBanner.classList.add("show");
-          nextSceneBtn.style.display = "none";
         }
       } else {
-        feedbackBox.textContent = "好像哪裡怪怪的，再仔細看題目跟提示試試看！";
+        feedbackBox.innerHTML =
+          "<strong>還差一點點～</strong> 可以再想想看線索，或和同學一起討論。";
         feedbackBox.classList.remove("correct-text");
         feedbackBox.classList.add("wrong-text");
       }
-    }
+    });
 
-    function goNextScene() {
-      const nextIndex = currentScene + 1;
-      if (nextIndex <= 4) {
-        showScene(nextIndex);
-      }
+    nextSceneBtn.addEventListener("click", () => {
       closeModal();
-    }
-
-    // 綁定事件
-    markerEls.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const idx = Number(btn.dataset.scene);
-        showScene(idx);      // 地圖切到對應教室
-        openPuzzle(idx);     // 打開題目
-      });
+      const prevIndex = currentScene;
+      goToNextScene(prevIndex);
     });
 
     modalCloseBtn.addEventListener("click", closeModal);
     cancelBtn.addEventListener("click", closeModal);
-    submitBtn.addEventListener("click", handleSubmit);
-    nextSceneBtn.addEventListener("click", goNextScene);
-
-    // Enter 提交答案
-    answerInput.addEventListener("keydown", e => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleSubmit();
-      }
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) closeModal();
     });
 
-    // 初始化
+    // ===== 初始化 =====
     updateLocationLabel();
     updateCodesText();
     startTimer();
