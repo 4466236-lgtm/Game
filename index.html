@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>校園失竊事件｜密室逃脫</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f3f7ff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #222;
+    }
+
+    .game-container {
+      background: #fff;
+      width: 95%;
+      max-width: 960px;
+      padding: 16px 16px 20px;
+      border-radius: 18px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: .9rem;
+      color: #555;
+      margin: 4px 0 12px;
+    }
+
+    .top-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between;
+      font-size: .85rem;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #334;
+    }
+
+    #timer {
+      font-weight: 600;
+      color: #c0392b;
+    }
+
+    .map-wrapper {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #d0d7f7;
+      background: #f0d3a5;
+      aspect-ratio: 4/3;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: none;
+    }
+
+    .scene.active { display: block; }
+
+    .scene-inner {
+      position: absolute;
+      inset: 7%;
+      background: #f4d7aa;
+      border-radius: 16px;
+      box-shadow:
+        inset 0 0 0 3px rgba(157,109,56,0.35),
+        inset 0 14px 0 rgba(255,255,255,0.4);
+    }
+
+    .door {
+      position: absolute;
+      width: 18%;
+      height: 16%;
+      bottom: 0;
+      left: 41%;
+      background: #d59b61;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0 -4px 0 rgba(0,0,0,0.2);
+    }
+    .door::after {
+      content: "";
+      position: absolute;
+      right: 12%;
+      top: 40%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #8b5a2b;
+    }
+
+    .marker {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: #ff3b30;
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.28);
+      transition: transform .1s ease, box-shadow .1s ease, opacity .2s ease;
+      font-size: 1.1rem;
+    }
+
+    .marker:hover:not(:disabled) {
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .marker.done {
+      background: #4cd964;
+      opacity: 0.85;
+    }
+
+    /* 0. 大廳 Lobby */
+    .scene-lobby .desk {
+      position: absolute;
+      width: 32%;
+      height: 18%;
+      top: 35%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #c77a3a;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    }
+    .scene-lobby .desk::before {
+      content: "";
+      position: absolute;
+      width: 40%;
+      height: 40%;
+      top: 15%;
+      left: 30%;
+      background: #fefcf1;
+      border-radius: 6px;
+      box-shadow:
+        0 0 0 2px rgba(0,0,0,0.1),
+        8px 6px 0 0 rgba(199,122,58,0.5);
+    }
+    .scene-lobby .notice {
+      position: absolute;
+      top: 11%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.9);
+      font-size: .8rem;
+      color: #555;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    }
+
+    /* 1. 教室 A：書本密碼 */
+    .scene-classA .board {
+      position: absolute;
+      top: 7%;
+      left: 8%;
+      width: 84%;
+      height: 15%;
+      background: #356b48;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 3px #263e2e;
+    }
+    .scene-classA .teacher-desk {
+      position: absolute;
+      top: 32%;
+      left: 34%;
+      width: 32%;
+      height: 16%;
+      background: #c77a3a;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    }
+    .scene-classA .book-row {
+      position: absolute;
+      bottom: 16%;
+      left: 10%;
+      right: 10%;
+      height: 26%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .scene-classA .book {
+      width: 18%;
+      height: 70%;
+      background: #f7d98b;
+      border-radius: 4px;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .scene-classA .book:nth-child(1){background:#f6c15b;}
+    .scene-classA .book:nth-child(2){background:#f48b6a;}
+    .scene-classA .book:nth-child(3){background:#7ec4e0;}
+    .scene-classA .book:nth-child(4){background:#9ad07d;}
+    .scene-classA .book::after{
+      content:"";
+      position:absolute;
+      left:15%;
+      right:15%;
+      top:20%;
+      bottom:25%;
+      border-radius:3px;
+      border:2px solid rgba(255,255,255,0.7);
+    }
+
+    /* 2. 教室 B：亮暗燈號 */
+    .scene-classB .board {
+      position: absolute;
+      top: 9%;
+      left: 10%;
+      width: 80%;
+      height: 14%;
+      background: #2f4e7a;
+      border-radius: 10px;
+      box-shadow: inset 0 0 0 3px #1f3550;
+    }
+    .scene-classB .lamp-row {
+      position: absolute;
+      top: 40%;
+      left: 18%;
+      width: 64%;
+      height: 12%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lamp {
+      width: 22%;
+      height: 70%;
+      border-radius: 999px;
+      background: #999;
+      box-shadow: inset 0 0 0 3px rgba(0,0,0,0.25);
+      position: relative;
+    }
+    .lamp::after{
+      content:"";
+      position:absolute;
+      inset:14%;
+      border-radius:999px;
+      background: #222;
+    }
+    .lamp.on::after{
+      background:#ffe55b;
+      box-shadow:0 0 10px rgba(255,229,91,0.8);
+    }
+
+    /* 3. 教室 C：體育儲物櫃 */
+    .scene-classC .cabinet {
+      position: absolute;
+      left: 10%;
+      top: 20%;
+      width: 30%;
+      height: 50%;
+      background: #f3c85b;
+      border-radius: 8px;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    }
+    .scene-classC .cabinet::before {
+      content:"";
+      position:absolute;
+      left:50%;
+      top:10%;
+      bottom:10%;
+      width:2px;
+      background:#d49c3b;
+    }
+    .scene-classC .ball {
+      position:absolute;
+      width:18%;
+      padding-bottom:18%;
+      border-radius:50%;
+      background:#e47356;
+      box-shadow:0 3px 0 rgba(0,0,0,0.2);
+    }
+    .scene-classC .ball:nth-child(2){left:52%;top:36%;}
+    .scene-classC .ball:nth-child(3){left:67%;top:55%;background:#6bb5e3;}
+    .scene-classC .ball:nth-child(4){left:77%;top:36%;background:#8bcf7f;}
+
+    /* 4. 辦公室：最終密碼箱 */
+    .scene-office .desk {
+      position: absolute;
+      top: 38%;
+      left: 28%;
+      width: 44%;
+      height: 20%;
+      background: #c77a3a;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    }
+    .scene-office .safe {
+      position:absolute;
+      top:18%;
+      left:30%;
+      width:40%;
+      height:60%;
+      background:#e0e4f5;
+      border-radius:8px;
+      box-shadow:
+        0 3px 0 rgba(0,0,0,0.25),
+        inset 0 0 0 3px #9aa3ce;
+    }
+    .scene-office .safe::before {
+      content:"";
+      position:absolute;
+      left:14%;
+      right:48%;
+      top:28%;
+      bottom:28%;
+      border-radius:6px;
+      border:3px solid #9aa3ce;
+    }
+    .scene-office .safe::after {
+      content:"";
+      position:absolute;
+      right:16%;
+      top:32%;
+      width:22%;
+      height:36%;
+      border-radius:50%;
+      border:4px solid #9aa3ce;
+    }
+
+    .status-text {
+      font-size: .85rem;
+      margin-top: 6px;
+      color: #444;
+    }
+    .status-text span {
+      font-weight: 600;
+      color: #355dff;
+    }
+
+    .success-banner {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #e3f7e8;
+      font-size: .9rem;
+      color: #2d7a43;
+      display: none;
+    }
+    .success-banner.show { display: block; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 1000;
+    }
+    .modal-backdrop.active { display: flex; }
+
+    .modal {
+      background: #fff;
+      width: 100%;
+      max-width: 520px;
+      border-radius: 16px;
+      padding: 16px 18px 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+      max-height: 90vh;
+      overflow: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .modal-close {
+      border: none;
+      background: transparent;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+    }
+    .question-text {
+      font-size: .96rem;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .hint-text {
+      font-size: .84rem;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .answer-input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #cfd6f5;
+      font-size: .95rem;
+      margin-bottom: 8px;
+    }
+    .feedback {
+      font-size: .86rem;
+      line-height: 1.5;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: #f6f7ff;
+      border: 1px dashed #cfd3f7;
+      margin-bottom: 8px;
+      min-height: 40px;
+    }
+    .feedback.correct-text { color: #2d7a43; }
+    .feedback.wrong-text   { color: #b02a2a; }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border-radius: 999px;
+      padding: 7px 14px;
+      border: none;
+      cursor: pointer;
+      font-size: .88rem;
+      font-weight: 500;
+    }
+    .btn-primary {
+      background: #355dff;
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #e5e7f5;
+      color: #333;
+    }
+    .btn[disabled] {
+      opacity: .7;
+      cursor: default;
+    }
+
+    @media (max-width: 600px) {
+      .game-container { padding: 12px 10px 14px; }
+      h1 { font-size: 1.25rem; }
+      .top-info { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>校園失竊事件：密室逃脫</h1>
+    <p class="subtitle">依線索依序破解大廳、三間教室與辦公室的謎題，找回失蹤的校史原稿！</p>
+
+    <div class="top-info">
+      <div class="badge">目前位置：<span id="locationLabel">大廳</span></div>
+      <div class="badge">已取得密碼：<span id="codesText">尚未取得</span></div>
+      <div class="badge">剩餘時間：<span id="timer">45:00</span></div>
+    </div>
+
+    <div class="map-wrapper" id="mapWrapper">
+      <!-- 0. 大廳 -->
+      <div class="scene scene-lobby active" data-scene="0">
+        <div class="scene-inner">
+          <div class="door"></div>
+          <div class="desk"></div>
+          <div class="notice">大廳　｜　信封裡藏著第一個線索</div>
+          <button class="marker" data-scene="0" style="top:40%;left:50%;">!</button>
+        </div>
+      </div>
+
+      <!-- 1. 教室 A -->
+      <div class="scene scene-classA" data-scene="1">
+        <div class="scene-inner">
+          <div class="board"></div>
+          <div class="teacher-desk"></div>
+          <div class="book-row">
+            <div class="book"></div>
+            <div class="book"></div>
+            <div class="book"></div>
+            <div class="book"></div>
+          </div>
+          <div class="door"></div>
+          <button class="marker" data-scene="1" style="top:47%;left:50%;">!</button>
+        </div>
+      </div>
+
+      <!-- 2. 教室 B -->
+      <div class="scene scene-classB" data-scene="2">
+        <div class="scene-inner">
+          <div class="board"></div>
+          <div class="lamp-row">
+            <div class="lamp on"></div>
+            <div class="lamp"></div>
+            <div class="lamp on"></div>
+          </div>
+          <div class="door"></div>
+          <button class="marker" data-scene="2" style="top:52%;left:50%;">!</button>
+        </div>
+      </div>
+
+      <!-- 3. 教室 C -->
+      <div class="scene scene-classC" data-scene="3">
+        <div class="scene-inner">
+          <div class="cabinet"></div>
+          <div class="ball"></div>
+          <div class="ball"></div>
+          <div class="ball"></div>
+          <div class="door"></div>
+          <button class="marker" data-scene="3" style="top:52%;left:30%;">!</button>
+        </div>
+      </div>
+
+      <!-- 4. 辦公室 -->
+      <div class="scene scene-office" data-scene="4">
+        <div class="scene-inner">
+          <div class="desk"></div>
+          <div class="safe"></div>
+          <div class="door"></div>
+          <button class="marker" data-scene="4" style="top:52%;left:50%;">!</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="status-text">
+      小提示：每個場景中的 <span>紅色驚嘆號 ❗</span> 都代表一個謎題，解開後才能前往下一間教室。
+    </p>
+
+    <div id="successBanner" class="success-banner">
+      🎉 恭喜你在時限內找回了校史原稿！可以和同學一起回顧每一關的解題方法，看看哪一關最有挑戰！
+    </div>
+  </div>
+
+  <!-- 題目 Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">關卡題目</div>
+        <button class="modal-close" id="modalCloseBtn" aria-label="關閉視窗">×</button>
+      </div>
+      <div class="question-text" id="questionText"></div>
+      <div class="hint-text" id="hintText"></div>
+      <input type="text" id="answerInput" class="answer-input" placeholder="請在此輸入答案（數字或文字）" />
+      <div class="feedback" id="feedbackBox">請仔細閱讀題目，再輸入你的答案。</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelBtn">先關閉，等等再想</button>
+        <button class="btn btn-primary" id="submitBtn">提交答案</button>
+        <button class="btn btn-primary" id="nextSceneBtn" style="display:none;">前往下一個場景 ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const scenesData = [
+      {
+        id: 0,
+        name: "大廳",
+        type: "info",
+        title: "大廳：失竊事件的開始",
+        question:
+          "今天早上，負責保管校史原稿的老師發現原稿不見了，只留下了一個信封。信封裡寫著：\\n\\n「想找回校史原稿，就從『知識的房間』開始吧。」\\n\\n你們即將在 45 分鐘內解開所有謎題，準備好就可以前往第一間教室。",
+        hint: "提示：『知識的房間』指的是哪一種教室呢？",
+        answer: "",
+        explanation:
+          "這一關沒有密碼，只是故事的開場。當你們準備好，就能前往教室 A，開始真正的解謎之旅！"
+      },
+      {
+        id: 1,
+        name: "教室 A（書本密碼）",
+        type: "code",
+        title: "教室 A：書本密碼關",
+        question:
+          "桌上擺著四本貼有標籤的書，封底分別寫著數字：\\n\\n甲書：1995 年出版，封底數字 3\\n乙書：2001 年出版，封底數字 1\\n丙書：2010 年出版，封底數字 4\\n丁書：2018 年出版，封底數字 7\\n\\n請依『出版年份由早到晚』的順序，把封底數字排在一起，輸入得到的四位數密碼。",
+        hint: "依年份排序：1995 → 2001 → 2010 → 2018。",
+        answer: "3147",
+        explanation:
+          "依照年份由早到晚，依序是：甲(1995, 數字 3)、乙(2001, 數字 1)、丙(2010, 數字 4)、丁(2018, 數字 7)，所以密碼是 3-1-4-7，也就是「3147」。"
+      },
+      {
+        id: 2,
+        name: "教室 B（亮暗燈號）",
+        type: "code",
+        title: "教室 B：亮暗燈號關",
+        question:
+          "牆上有三個長條燈，亮與暗的排列如下：\\n\\n亮　｜　暗　｜　亮\\n\\n桌上的提示卡寫著：「亮 = 1，暗 = 0，請把燈號看成一個三位數的二進位數。」\\n\\n請把這個二進位數換算成十進位數，輸入答案。",
+        hint: "從左到右是 1 0 1（二進位 101），把它換成十進位。",
+        answer: "5",
+        explanation:
+          "依提示，亮 = 1、暗 = 0，所以三格燈依序是 1 0 1，也就是二進位的 101。將 101₂ 換成十進位為 5（4 + 1）。因此第二段密碼是「5」。"
+      },
+      {
+        id: 3,
+        name: "教室 C（體育儲物櫃）",
+        type: "code",
+        title: "教室 C：體育儲物櫃關",
+        question:
+          "體育器材室的地板上畫著三個圓形標誌，旁邊畫著箭頭，指向的順序是：\\n\\n2 → 5 → 9\\n\\n老師在紙條上寫著：「請依箭頭指向的順序，把數字連起來，就是下一段密碼。」\\n\\n請輸入你得到的三位數密碼。",
+        hint: "按順序把三個數字接在一起。",
+        answer: "259",
+        explanation:
+          "按照箭頭順序依序讀出數字 2、5、9，將它們接在一起，就是三位數「259」。"
+      },
+      {
+        id: 4,
+        name: "辦公室（最終密碼箱）",
+        type: "code",
+        title: "辦公室：最終密碼箱",
+        question:
+          "你們帶著三段密碼來到辦公室，桌上放著一個大密碼箱，旁邊貼著一張指示：\\n\\n「請依照取得的順序，將三段密碼直接接在一起，組成完整的最終密碼。」\\n\\n已知你們拿到的三段密碼是：\\n第一段：3147\\n第二段：5\\n第三段：259\\n\\n請把三段密碼依順序接在一起，輸入八位數的最終密碼。",
+        hint: "把 3147、5、259 接成一個數字，中間不要加任何符號。",
+        answer: "31475259",
+        explanation:
+          "依照指示，將三段密碼依順序相連：第一段 3147、第二段 5、第三段 259，合起來得到「31475259」，就是打開密碼箱的最終密碼。"
+      }
+    ];
+
+    const TOTAL_TIME_SEC = 45 * 60;
+    let remainingSec = TOTAL_TIME_SEC;
+    let timerId = null;
+    let currentScene = 0;
+    const obtainedCodes = [];
+
+    const sceneEls = document.querySelectorAll(".scene");
+    const markerEls = document.querySelectorAll(".marker");
+    const locationLabel = document.getElementById("locationLabel");
+    const codesText = document.getElementById("codesText");
+    const timerEl = document.getElementById("timer");
+    const successBanner = document.getElementById("successBanner");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const modalTitle = document.getElementById("modalTitle");
+    const questionTextEl = document.getElementById("questionText");
+    const hintTextEl = document.getElementById("hintText");
+    const answerInput = document.getElementById("answerInput");
+    const feedbackBox = document.getElementById("feedbackBox");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const nextSceneBtn = document.getElementById("nextSceneBtn");
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    }
+
+    function updateTimer() {
+      timerEl.textContent = formatTime(remainingSec);
+    }
+
+    function startTimer() {
+      updateTimer();
+      timerId = setInterval(() => {
+        remainingSec--;
+        if (remainingSec <= 0) {
+          remainingSec = 0;
+          updateTimer();
+          clearInterval(timerId);
+          handleTimeUp();
+        } else {
+          updateTimer();
+        }
+      }, 1000);
+    }
+
+    function handleTimeUp() {
+      feedbackBox.textContent =
+        "時間到了！這一輪挑戰結束，可以請老師或主持人一起回顧解題過程，再重新挑戰一次。";
+      feedbackBox.classList.remove("correct-text");
+      feedbackBox.classList.add("wrong-text");
+      modalTitle.textContent = "時間到";
+      questionTextEl.textContent =
+        "45 分鐘已經用完，建議先暫停遊戲與同伴討論哪一關最卡，再重新挑戰！";
+      hintTextEl.textContent = "";
+      answerInput.style.display = "none";
+      submitBtn.style.display = "none";
+      nextSceneBtn.style.display = "none";
+      modalBackdrop.classList.add("active");
+      modalBackdrop.setAttribute("aria-hidden", "false");
+      markerEls.forEach(m => m.disabled = true);
+    }
+
+    function updateLocationLabel() {
+      const data = scenesData[currentScene];
+      locationLabel.textContent = data ? data.name : "";
+    }
+
+    function updateCodesText() {
+      if (!obtainedCodes.length) {
+        codesText.textContent = "尚未取得";
+      } else {
+        codesText.textContent = obtainedCodes.join("　|　");
+      }
+    }
+
+    function showScene(index) {
+      sceneEls.forEach(el => {
+        if (Number(el.dataset.scene) === index) {
+          el.classList.add("active");
+        } else {
+          el.classList.remove("active");
+        }
+      });
+      currentScene = index;
+      updateLocationLabel();
+    }
+
+    function openPuzzle(sceneIndex) {
+      const data = scenesData[sceneIndex];
+      if (!data) return;
+
+      modalTitle.textContent = data.title;
+      questionTextEl.textContent = data.question;
+      hintTextEl.textContent = data.hint || "";
+      feedbackBox.textContent = "請仔細閱讀題目，再輸入你的答案。";
+      feedbackBox.classList.remove("correct-text", "wrong-text");
+
+      answerInput.value = "";
+      answerInput.style.display = (data.type === "info") ? "none" : "block";
+      submitBtn.style.display = (data.type === "info") ? "none" : "inline-block";
+      nextSceneBtn.style.display = "none";
+
+      if (data.type === "info") {
+        // 大廳：只有說明，直接顯示提示
+        feedbackBox.textContent = data.explanation;
+        feedbackBox.classList.add("correct-text");
+      }
+
+      modalBackdrop.classList.add("active");
+      modalBackdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove("active");
+      modalBackdrop.setAttribute("aria-hidden", "true");
+    }
+
+    function handleSubmit() {
+      const data = scenesData[currentScene];
+      if (!data || data.type === "info") return;
+
+      const userAns = answerInput.value.trim();
+      if (!userAns) {
+        feedbackBox.textContent = "請先輸入答案喔！";
+        feedbackBox.classList.remove("correct-text");
+        feedbackBox.classList.add("wrong-text");
+        return;
+      }
+
+      if (userAns === data.answer) {
+        feedbackBox.textContent = "答對了！\\n\\n" + data.explanation;
+        feedbackBox.classList.remove("wrong-text");
+        feedbackBox.classList.add("correct-text");
+
+        // 記錄密碼（最後一關就不用顯示在上面）
+        if (data.id >= 1 && data.id <= 3) {
+          if (!obtainedCodes.includes(data.answer)) {
+            obtainedCodes.push(data.answer);
+            updateCodesText();
+          }
+        }
+
+        // 標記這個 marker 完成
+        const marker = document.querySelector(`.marker[data-scene="${data.id}"]`);
+        if (marker) {
+          marker.classList.add("done");
+          marker.disabled = true;
+        }
+
+        submitBtn.style.display = "none";
+
+        if (data.id < 4) {
+          nextSceneBtn.style.display = "inline-block";
+        } else {
+          // 最終關
+          successBanner.classList.add("show");
+          nextSceneBtn.style.display = "none";
+        }
+      } else {
+        feedbackBox.textContent = "好像哪裡怪怪的，再仔細看題目跟提示試試看！";
+        feedbackBox.classList.remove("correct-text");
+        feedbackBox.classList.add("wrong-text");
+      }
+    }
+
+    function goNextScene() {
+      const nextIndex = currentScene + 1;
+      if (nextIndex <= 4) {
+        showScene(nextIndex);
+      }
+      closeModal();
+    }
+
+    // 綁定事件
+    markerEls.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.dataset.scene);
+        showScene(idx);      // 地圖切到對應教室
+        openPuzzle(idx);     // 打開題目
+      });
+    });
+
+    modalCloseBtn.addEventListener("click", closeModal);
+    cancelBtn.addEventListener("click", closeModal);
+    submitBtn.addEventListener("click", handleSubmit);
+    nextSceneBtn.addEventListener("click", goNextScene);
+
+    // Enter 提交答案
+    answerInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSubmit();
+      }
+    });
+
+    // 初始化
+    updateLocationLabel();
+    updateCodesText();
+    startTimer();
+  </script>
+</body>
+</html>
