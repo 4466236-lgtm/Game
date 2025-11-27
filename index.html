@@ -484,12 +484,12 @@
 <body>
   <div class="game-container">
     <h1>校園失竊事件：密室逃脫</h1>
-    <p class="subtitle">依線索依序破解大廳、三間教室與辦公室的謎題，找回失蹤的校史原稿！</p>
+    <p class="subtitle">依線索依序破解大廳、三間教室與辦公室的謎題，找回失蹤的校史原稿，同時練習特教與身心障礙的觀念！</p>
 
     <div class="top-info">
       <div class="badge">目前位置：<span id="locationLabel">大廳</span></div>
       <div class="badge">已取得密碼：<span id="codesText">尚未取得</span></div>
-      <div class="badge">剩餘時間：<span id="timer">45:00</span></div>
+      <div class="badge">剩餘時間：<span id="timer">15:00</span></div>
     </div>
 
     <div class="map-wrapper" id="mapWrapper">
@@ -561,7 +561,7 @@
     </p>
 
     <div id="successBanner" class="success-banner">
-      🎉 恭喜你在時限內找回了校史原稿！可以和同學一起回顧每一關的解題方法，看看哪一關最有挑戰！
+      🎉 恭喜你在時限內找回了校史原稿！也把許多特教與身心障礙相關的概念實際應用在解謎過程中，可以和同學一起回顧每一關的重點。
     </div>
   </div>
 
@@ -585,8 +585,7 @@
   </div>
 
   <script>
-    // ===== 遊戲資料 =====
-
+    // ===== 題目資料（特教主題版 + 你指定的大廳劇情） =====
     const scenesData = [
       {
         id: 0,
@@ -594,63 +593,65 @@
         type: "info",
         title: "大廳：失竊事件的開始",
         question:
-          "今天早上，負責保管校史原稿的老師發現原稿不見了，只留下了一個信封。信封裡寫著：\n\n「想找回校史原稿，就從『知識的房間』開始吧。」\n\n你們即將在 45 分鐘內解開所有謎題，準備好就可以前往第一間教室。",
-        hint: "提示：『知識的房間』指的是哪一種教室呢？",
+          "今天早上，負責保管校史原稿的老師發現原稿不見了，只留下了一個信封。信封裡寫著：\n「想找回校史原稿，就從『知識的房間』開始吧。」\n你們即將在 15 分鐘內解開所有謎題，準備好就可以前往第一間教室。",
+        hint: "提示：「知識的房間」通常是放滿書本、常用來上課、閱讀的教室。",
         answer: "",
         explanation:
-          "這一關沒有密碼，只是故事的開場。當你們準備好，就能前往教室 A，開始真正的解謎之旅！"
+          "這一關沒有數字密碼，是故事的開場。當大家了解任務內容後，就可以前往教室 A，開始一步步找回校史原稿，也在過程中接觸特教與身心障礙相關的概念。"
       },
       {
         id: 1,
-        name: "教室 A（書本密碼）",
+        name: "教室 A（特教核心步驟）",
         type: "code",
-        title: "教室 A：書本密碼關",
+        title: "教室 A：特教系學生的工作流程密碼",
         question:
-          "桌上擺著四本貼有標籤的書，封底分別寫著數字：\n\n甲書：1995 年出版，封底數字 3\n乙書：2001 年出版，封底數字 1\n丙書：2010 年出版，封底數字 4\n丁書：2018 年出版，封底數字 7\n\n請依『出版年份由早到晚』的順序，把封底數字排在一起，輸入得到的四位數密碼。",
-        hint: "依年份排序：1995 → 2001 → 2010 → 2018。",
+          "教室 A 是平常上「特殊教育概論」與「IEP 設計」的地方，講桌上有四個抽屜，抽屜標籤與貼紙上的數字如下：\n\n① 抽屜一：功能性評量與需求了解　→ 貼紙數字 3\n② 抽屜二：撰寫個別化教育計畫 IEP　→ 貼紙數字 1\n③ 抽屜三：實施教學調整與輔具支援　→ 貼紙數字 4\n④ 抽屜四：家長與跨專業團隊合作會議　→ 貼紙數字 7\n\n桌上便條紙寫著：\n「請依照『實務上比較常見的流程順序』排列，\n然後依順序讀出抽屜上的數字，組成四位數密碼。」\n\n請輸入你推理出的四位數密碼。",
+        hint:
+          "通常會先了解學生需求與做評量，接著撰寫 IEP，再根據 IEP 進行教學調整，最後透過家長與跨專業團隊持續合作。",
         answer: "3147",
         explanation:
-          "依照年份由早到晚，依序是：甲(1995, 數字 3)、乙(2001, 數字 1)、丙(2010, 數字 4)、丁(2018, 數字 7)，所以密碼是 3-1-4-7，也就是「3147」。"
+          "依一般實務流程：\n1️⃣ 先做功能性評量與了解需求（數字 3）\n2️⃣ 再撰寫 IEP（數字 1）\n3️⃣ 接著實施教學調整與輔具支援（數字 4）\n4️⃣ 並透過家長與跨專業團隊合作持續追蹤（數字 7）\n\n因此依流程順序讀出的數字是 3-1-4-7，也就是密碼「3147」。\n這一關也提醒特教系學生：評量 → 計畫 → 教學 → 合作，是很重要的一條線。"
       },
       {
         id: 2,
-        name: "教室 B（亮暗燈號）",
+        name: "教室 B（感官與注意力支持）",
         type: "code",
-        title: "教室 B：亮暗燈號關",
+        title: "教室 B：感官提示燈與教室規則",
         question:
-          "牆上有三個長條燈，亮與暗的排列如下：\n\n亮　｜　暗　｜　亮\n\n桌上的提示卡寫著：「亮 = 1，暗 = 0，請把燈號看成一個三位數的二進位數。」\n\n請把這個二進位數換算成十進位數，輸入答案。",
-        hint: "從左到右是 1 0 1（二進位 101），把它換成十進位。",
+          "教室 B 是實作「班級經營與情緒/注意力支持策略」的地方。\n\n黑板上方有三個長條燈，老師設計了一套簡單的視覺提示，讓注意力較易分散、或對聲音敏感的學生，也能快速知道現在課堂模式：\n\n亮燈：可以小聲討論或活動（用 1 表示）\n暗燈：需要安靜閱讀或專心聽講（用 0 表示）\n\n此刻燈的狀態是：\n\n亮　｜　暗　｜　亮\n\n桌上的提示卡寫著：「請把燈號看成一個三位數的二進位數，再換成十進位。」\n\n請輸入換算後的十進位數字。",
+        hint: "從左到右是 1 0 1（二進位 101），試著算算：4 的位 + 1 的位。",
         answer: "5",
         explanation:
-          "依提示，亮 = 1、暗 = 0，所以三格燈依序是 1 0 1，也就是二進位的 101。將 101₂ 換成十進位為 5（4 + 1）。因此第二段密碼是「5」。"
+          "依提示，亮 = 1、暗 = 0，所以三格燈依序是 1 0 1，就是二進位的 101。\n將 101₂ 換成十進位為 5（4 + 1）。因此這一關的密碼是「5」。\n\n這樣的視覺提示系統可以搭配口頭說明、座位安排與其他調整，協助 ADHD、自閉症或容易焦慮的學生更快掌握教室狀態，是特教系常會學到的環境調整策略。"
       },
       {
         id: 3,
-        name: "教室 C（體育儲物櫃）",
+        name: "教室 C（融合體育與合理調整）",
         type: "code",
-        title: "教室 C：體育儲物櫃關",
+        title: "教室 C：融合體育課的器材配置",
         question:
-          "體育器材室的地板上畫著三個圓形標誌，旁邊畫著箭頭，指向的順序是：\n\n2 → 5 → 9\n\n老師在紙條上寫著：「請依箭頭指向的順序，把數字連起來，就是下一段密碼。」\n\n請輸入你得到的三位數密碼。",
-        hint: "按順序把三個數字接在一起。",
+          "教室 C 模擬的是體育器材間，牆上貼著一張「融合體育課器材配置示意」，希望身心障礙學生也能一起參與。\n\n地板三個圓形標誌前，分別擺著不同器材與說明：\n\n2：重量較輕、彈性較好的軟式球——適合肌力較弱或動作協調較慢的學生\n5：會發出聲音的球——適合視障學生透過聲音追蹤位置\n9：大面積接球板或布幕——讓害怕失誤的學生也比較容易接到球\n\n旁邊的箭頭標示順序為：\n\n2 → 5 → 9\n\n說明卡寫著：「請依箭頭順序讀出器材編號，把數字接在一起，就是下一段密碼。」\n\n請輸入你得到的三位數密碼。",
+        hint: "照箭頭從左到右讀：2、5、9，直接接成一個三位數。",
         answer: "259",
         explanation:
-          "按照箭頭順序依序讀出數字 2、5、9，將它們接在一起，就是三位數「259」。"
+          "根據箭頭順序依序讀出數字 2、5、9，接在一起就是三位數「259」。\n\n這一關反映的是『合理調整』與『融合體育』的概念：透過改變器材重量、大小、聲音線索等方式，讓不同能力與需求的學生都能有參與感，而不是被排除在活動之外。"
       },
       {
         id: 4,
-        name: "辦公室（最終密碼箱）",
+        name: "辦公室（特教支持藍圖完成）",
         type: "code",
-        title: "辦公室：最終密碼箱",
+        title: "辦公室：重新拼回特教支持藍圖",
         question:
-          "你們帶著三段密碼來到辦公室，桌上放著一個大密碼箱，旁邊貼著一張指示：\n\n「請依照取得的順序，將三段密碼直接接在一起，組成完整的最終密碼。」\n\n已知你們拿到的三段密碼是：\n第一段：3147\n第二段：5\n第三段：259\n\n請把三段密碼依順序接在一起，輸入八位數的最終密碼。",
-        hint: "把 3147、5、259 接成一個數字，中間不要加任何符號。",
+          "你們帶著三段密碼來到辦公室，特教組長的桌上放著一個上鎖的資料櫃，抽屜標籤寫著：「身心障礙學生支持藍圖（特教組專用）」。\n\n旁邊貼著一張指示：\n「請依照取得的順序，將三段密碼直接接在一起，組成完整的最終密碼，用來打開資料櫃。」\n\n已知你們拿到的三段密碼是：\n第一段：3147（反映特教實務流程：評量→IEP→教學調整→合作）\n第二段：5（代表以感官與環境調整支持學生專注）\n第三段：259（象徵在體育課中提供不同器材與合理調整）\n\n請把三段密碼依順序接在一起，輸入八位數的最終密碼。",
+        hint: "只要把 3147、5、259 依取得順序直接接起來，中間不要加任何符號或空格。",
         answer: "31475259",
         explanation:
-          "依照指示，將三段密碼依順序相連：第一段 3147、第二段 5、第三段 259，合起來得到「31475259」，就是打開密碼箱的最終密碼。"
+          "依照指示，將三段密碼依順序相連：第一段 3147、第二段 5、第三段 259，合起來就是「31475259」。\n\n你們成功打開資料櫃，找回了《身心障礙學生支持藍圖》。\n藍圖中的內容，其實正是你們剛在每一關中練習過的觀念：\n- 了解需求與評量 → 撰寫 IEP → 教學調整 → 合作（3147）\n- 利用環境與感官提示支持學生（5）\n- 在體育與活動中做合理調整，讓每個人都能參與（259）\n\n對特教系學生來說，這不只是解謎成功，更是把「如何讓學生被看見、被支持」變成具體行動的練習。"
       }
     ];
 
-    const TOTAL_TIME_SEC = 45 * 60; // 45 分鐘
+    // ===== 遊戲時間：15 分鐘 =====
+    const TOTAL_TIME_SEC = 15 * 60; // 15 分鐘
     let remainingSec = TOTAL_TIME_SEC;
     let timerId = null;
     let currentScene = 0;
@@ -675,7 +676,6 @@
     const submitBtn = document.getElementById("submitBtn");
     const nextSceneBtn = document.getElementById("nextSceneBtn");
 
-    // ===== 工具函式 =====
     function formatTime(sec) {
       const m = Math.floor(sec / 60);
       const s = sec % 60;
@@ -707,7 +707,7 @@
       feedbackBox.classList.remove("correct-text");
       feedbackBox.classList.add("wrong-text");
       modalTitle.textContent = "時間到";
-      questionTextEl.textContent = "45 分鐘已經用完，建議先暫停遊戲與同伴討論哪一關最卡，再重新挑戰！";
+      questionTextEl.textContent = "15 分鐘已經用完，建議先暫停遊戲與同伴討論哪一關最卡，再重新挑戰！";
       hintTextEl.textContent = "";
       answerInput.style.display = "none";
       submitBtn.style.display = "none";
@@ -715,7 +715,6 @@
       modalBackdrop.classList.add("active");
       modalBackdrop.setAttribute("aria-hidden", "false");
 
-      // 禁用所有 marker
       markerEls.forEach(m => m.disabled = true);
     }
 
@@ -777,7 +776,6 @@
     }
 
     function markSceneSolved(sceneIndex) {
-      // 把該 scene 的 marker 標為 done
       markerEls.forEach(m => {
         if (Number(m.dataset.scene) === sceneIndex) {
           m.classList.add("done");
@@ -788,14 +786,12 @@
     function goToNextScene(fromIndex) {
       const nextIndex = fromIndex + 1;
       if (nextIndex >= scenesData.length) {
-        // 全部完成
         successBanner.classList.add("show");
         return;
       }
       showScene(nextIndex);
     }
 
-    // ===== 事件綁定 =====
     markerEls.forEach(btn => {
       btn.addEventListener("click", () => {
         const sceneIndex = Number(btn.dataset.scene);
@@ -808,7 +804,6 @@
       if (!data) return;
 
       if (data.type === "info") {
-        // 直接視為通過
         feedbackBox.textContent = data.explanation;
         feedbackBox.classList.add("correct-text");
         markSceneSolved(currentScene);
@@ -840,13 +835,11 @@
         }
         markSceneSolved(currentScene);
 
-        // 記錄密碼（除了 info 場景）
         if (data.answer && !obtainedCodes.includes(String(data.answer))) {
           obtainedCodes.push(String(data.answer));
           updateCodesText();
         }
 
-        // 如果是最後一關也顯示成功訊息
         if (currentScene === scenesData.length - 1) {
           successBanner.classList.add("show");
         }
